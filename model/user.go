@@ -15,7 +15,6 @@ type User struct {
 }
 
 func (u *User) FixShow() *User {
-
 	return u
 }
 func DBPassword(password string) string {

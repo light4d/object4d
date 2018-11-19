@@ -30,7 +30,7 @@ func SearchUsers(filter map[string]interface{}) (result []model.User, err error)
 	})
 	db := dao.DB()
 
-	err = db.Model(&model.User{}).Find(&result, filter).Error
+	err = db.Table("user").Find(&result, filter).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"Find":   "users",
@@ -73,7 +73,7 @@ func DeleteUser(userid string) (err error) {
 	if len(users) > 1 {
 		return model.ErrLenBigThan1
 	}
-	err = dao.DB().Where(filter).Delete(&model.User{}).Error
+	err = dao.DB().Where(filter).Table("user").Delete(&model.User{}).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"Model.Delete": users,
@@ -95,7 +95,7 @@ func CreateUser(user model.User) (userid string, err error) {
 	}
 
 	db := dao.DB()
-	err = db.Model(&model.User{}).Create(&user).Error
+	err = db.Table("user").Create(&user).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"user":       user,
@@ -146,7 +146,7 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 		return model.NewErrData(model.FieldCannotupdate, errfields)
 	}
 	db := dao.DB()
-	err = db.Model(&model.User{}).Where("id = ?", id).Updates(updater).Error
+	err = db.Table("user").Where("id = ?", id).Updates(updater).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"func":    "UpdateUser Updates",
@@ -161,7 +161,7 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 func GetUser(userid string) (*model.User, error) {
 	db := dao.DB()
 	users := make([]model.User, 0)
-	err := db.Model(new(model.User)).Where("id = ?", userid).Find(&users).Error
+	err := db.Table("user").Where("id = ?", userid).Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
