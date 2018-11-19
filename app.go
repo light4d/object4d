@@ -9,8 +9,7 @@ import (
 
 	"github.com/gobestsdk/gobase/log"
 	"github.com/light4d/yourfs/common/config"
-
-	"apps/apiserver/routers"
+	"github.com/light4d/yourfs/router"
 )
 
 func main() {
@@ -43,7 +42,7 @@ func main() {
 
 	//config.Init("local.config.json")
 
-	routers.Init()
+	router.Init()
 
 	server.Run()
 }

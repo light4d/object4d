@@ -10,24 +10,21 @@ import (
 type Config struct {
 	HttpPort int    `json:"http_port"`
 	Mysql    string `json:"mysql"`
-	Weixin   struct {
-		APPID  string `json:"appid"`
-		SECRET string `json:"secret"`
-	}
-	Qiniu struct {
-		Ak string `json:"ak"`
-		Sk string `json:"sk"`
-	} `json:"qiniu"`
+	Redis    struct {
+		Addr     string `json:"addr"`
+		Password string `json:"password"`
+		DB       int    `json:"db"`
+	} `json:"redis"`
 }
 
 var (
 	APPConfig Config = Config{
-		HttpPort: 8000,
+		HttpPort: 30000,
 		Mysql:    "",
 	}
 )
 
-func Init(configfilepath string) error {
+func ParseConfig(configfilepath string) error {
 	data, err := ioutil.ReadFile(configfilepath)
 	if err != nil {
 		log.Fatal(log.Fields{"error": err, "app": "config file read "})

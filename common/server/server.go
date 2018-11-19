@@ -1,11 +1,12 @@
 package server
 
 import (
-	"common/config"
 	"encoding/json"
 	"github.com/gobestsdk/gobase/httpserver"
 	"github.com/gobestsdk/gobase/log"
-	"model"
+
+	"github.com/light4d/yourfs/common/config"
+	"github.com/light4d/yourfs/model"
 	"net/http"
 )
 
