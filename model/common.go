@@ -1,9 +1,9 @@
 package model
 
 type CommonResp struct {
-	Message string
-	Error   error
-	Result  interface{}
+	Error  error
+	Code   int
+	Result interface{}
 }
 
 type Err struct {
@@ -23,6 +23,7 @@ func NewErrData(detail string, data interface{}) error {
 	return &Err{Detail: detail, Data: data}
 }
 
+var FieldCannotupdate = "there fields can't updated"
 var ErrLenBigThan1 = NewErr("len(*)>1")
 var ErrLenNotEqual1 = NewErr("len(*)!=1")
 var ErrLenEqual0 = NewErr("len(*)==0")

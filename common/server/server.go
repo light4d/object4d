@@ -21,13 +21,13 @@ type MethodNotFoundHandler struct {
 func (this *MethodNotFoundHandler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	log.Error(log.Fields{"err": "handlernotfound", "url": req.URL})
 	r := model.CommonResp{
-		Message: "路由不存在",
+		Code:   -1,
+		Result: "路由不存在",
 	}
 	rb, err := json.Marshal(r)
 	if err != nil {
 		log.Error(log.Fields{"err": err, "json": "User_Upsertresp"})
 	}
-
 	resp.Write(rb)
 }
 

@@ -8,7 +8,6 @@ import (
 	moehttp "github.com/light4d/yourfs/common/http"
 	"github.com/light4d/yourfs/model"
 	"net/http"
-	"strconv"
 
 	"github.com/light4d/yourfs/service"
 )
@@ -58,7 +57,7 @@ func user_post(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	result.Result = struct {
-		UserID int
+		UserID string
 	}{UserID: userid}
 	moehttp.Endresp(result, resp)
 }
@@ -66,14 +65,14 @@ func user_post(resp http.ResponseWriter, req *http.Request) {
 func user_put(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 
-	id, err := strconv.Atoi(req.URL.Query().Get("id"))
-	if err != nil {
-		result.Error = err
+	id := req.URL.Query().Get("id")
+	if id == "" {
+		result.Error = errors.New("id不能为空")
 		moehttp.Endresp(result, resp)
 		return
 	}
 	updater := make(map[string]interface{})
-	err = moehttp.Unmarshalreqbody(req, &updater)
+	err := moehttp.Unmarshalreqbody(req, &updater)
 	if err != nil {
 		result.Error = err
 		moehttp.Endresp(result, resp)
@@ -85,16 +84,9 @@ func user_put(resp http.ResponseWriter, req *http.Request) {
 func user_delete(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 
-	useridstr := req.URL.Query().Get("id")
+	userid := req.URL.Query().Get("id")
 
-	if useridstr != "" {
-		userid, err := strconv.Atoi(useridstr)
-		if err != nil {
-			result.Error = model.NewErr("err = strconv.Atoi(id)")
-			moehttp.Endresp(result, resp)
-			return
-		}
-
+	if userid != "" {
 		result.Error = service.DeleteUser(userid)
 
 		moehttp.Endresp(result, resp)

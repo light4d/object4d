@@ -49,7 +49,7 @@ func SearchUsers(filter map[string]interface{}) (result []model.User, err error)
 
 }
 
-func DeleteUser(userid int) (err error) {
+func DeleteUser(userid string) (err error) {
 	log.Info(log.Fields{
 		"func":   "DeleteUser",
 		"userid": userid,
@@ -143,7 +143,7 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 
 	errfields := checkupdateUser(updater)
 	if len(errfields) > 0 {
-		return model.NewErrData("there fields can't updated", errfields)
+		return model.NewErrData(model.FieldCannotupdate, errfields)
 	}
 	db := dao.DB()
 	err = db.Model(&model.User{}).Where("id = ?", id).Updates(updater).Error
@@ -158,13 +158,10 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 	return
 }
 
-func SendCode(phone string) {
-
-}
-func GetUser(phone string) (*model.User, error) {
+func GetUser(userid string) (*model.User, error) {
 	db := dao.DB()
 	users := make([]model.User, 0)
-	err := db.Model(new(model.User)).Where("phone = ?", phone).Find(&users).Error
+	err := db.Model(new(model.User)).Where("id = ?", userid).Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -178,8 +175,8 @@ func GetUser(phone string) (*model.User, error) {
 	}
 
 }
-func Login(phone, password string) error {
-	existuser, err := GetUser(phone)
+func Login(userid, password string) error {
+	existuser, err := GetUser(userid)
 	log.Info(log.Fields{
 		"loginuser": existuser,
 		"err":       err.Error(),
@@ -192,7 +189,7 @@ func Login(phone, password string) error {
 		return errors.New("用户未注册")
 
 	}
-	if existuser.Password != nil && (existuser.Password) == model.DBPassword(password) {
+	if (existuser.Password) != model.DBPassword(password) {
 		return errors.New("用户名密码错误")
 
 	}
