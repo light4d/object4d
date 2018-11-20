@@ -11,7 +11,9 @@ type User struct {
 	ID          string
 	Name        string
 	Password    string `json:"-"`
+	Type        string `json:"-"`
 	Face        string
+	Parent      string
 	Registetime interface{}
 }
 

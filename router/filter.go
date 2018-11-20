@@ -8,6 +8,14 @@ import (
 	"net/http"
 )
 
+func getuid(req *http.Request) string {
+	c, err := req.Cookie("token")
+	if err != nil {
+
+		return ""
+	}
+	return service.Checktoken(c.Value)
+}
 func checktoken(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Content-Type", "application/json")
 
@@ -26,6 +34,8 @@ func checktoken(resp http.ResponseWriter, req *http.Request) {
 		switch req.URL.Path {
 		case "/user":
 			user(resp, req)
+		case "/group":
+			group(resp, req)
 		}
 		return
 	}

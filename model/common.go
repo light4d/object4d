@@ -24,6 +24,6 @@ func NewErrData(detail string, data interface{}) error {
 }
 
 var FieldCannotupdate = "there fields can't updated"
-var ErrLenBigThan1 = NewErr("len(*)>1")
-var ErrLenNotEqual1 = NewErr("len(*)!=1")
-var ErrLenEqual0 = NewErr("len(*)==0")
+var ErrLenBigThan1 = NewErr("len(*)>1,already exist")
+var ErrLenNotEqual1 = NewErr("len(*)!=1,create failed")
+var ErrLenEqual0 = NewErr("len(*)==0,not found")

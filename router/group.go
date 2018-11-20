@@ -12,63 +12,63 @@ import (
 	"github.com/light4d/yourfs/service"
 )
 
-func user(resp http.ResponseWriter, req *http.Request) {
+func group(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Content-Type", "application/json")
 	switch req.Method {
 	case http.MethodGet:
-		user_get(resp, req)
+		group_get(resp, req)
 	case http.MethodPost:
-		user_post(resp, req)
+		group_post(resp, req)
 	case http.MethodPut:
-		user_put(resp, req)
+		group_put(resp, req)
 	case http.MethodDelete:
-		user_delete(resp, req)
+		group_delete(resp, req)
 	default:
 		moehttp.Options(req, resp)
 	}
 }
-func user_get(resp http.ResponseWriter, req *http.Request) {
+func group_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	filter := moehttp.Getfilter(req)
-	filter["type"] = ""
-	us, err := service.SearchUserorGroup(filter)
+	filter["type"] = "group"
+	gs, err := service.SearchUserorGroup(filter)
 	if err != nil {
 		result.Error = err.Error()
 	} else {
-		result.Result = us
+		result.Result = gs
 	}
 	moehttp.Endresp(result, resp)
 }
-func user_post(resp http.ResponseWriter, req *http.Request) {
+func group_post(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 
-	user := model.User{}
+	group := model.User{}
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
-	err = json.Unmarshal(body, &user)
+	err = json.Unmarshal(body, &group)
 	if err != nil {
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
-
-	userid, err := service.CreateUser(user)
+	uid := getuid(req)
+	groupid, err := service.CreateGroup(uid, group)
 	if err != nil {
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 	result.Result = struct {
-		UserID string
-	}{UserID: userid}
+		ID string
+	}{ID: groupid}
 	moehttp.Endresp(result, resp)
 }
 
-func user_put(resp http.ResponseWriter, req *http.Request) {
+func group_put(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 
 	id := req.URL.Query().Get("id")
@@ -84,19 +84,20 @@ func user_put(resp http.ResponseWriter, req *http.Request) {
 		moehttp.Endresp(result, resp)
 		return
 	}
-	err = service.UpdateUser(id, updater)
+	uid := getuid(req)
+	err = service.UpdateGroup(uid, id, updater)
 	if err != nil {
 		result.Error = err.Error()
 	}
 	moehttp.Endresp(result, resp)
 }
-func user_delete(resp http.ResponseWriter, req *http.Request) {
+func group_delete(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
+	uid := getuid(req)
+	groupid := req.URL.Query().Get("id")
 
-	userid := req.URL.Query().Get("id")
-
-	if userid != "" {
-		err := service.DeleteUser(userid)
+	if groupid != "" {
+		err := service.DeleteGroup(uid, groupid)
 		if err != nil {
 			result.Error = err.Error()
 		}

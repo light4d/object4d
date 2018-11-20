@@ -20,13 +20,14 @@ func checkandfixCreateUser(user *model.User) (err error) {
 
 	m, err := regexp.Match("^[a-zA-Z0-9_-]{4,16}$", []byte(user.ID))
 	if user.ID == "" || err != nil || !m {
-		return model.NewErrData("用户名格式不对", user.ID)
+		return model.NewErrData("user id error format", user.ID)
 	}
 	user.Password = model.DBPassword(user.Password)
 	user.Registetime = time.Now()
+
 	return
 }
-func SearchUsers(filter map[string]interface{}) (result []model.User, err error) {
+func SearchUserorGroup(filter map[string]interface{}) (result []model.User, err error) {
 	log.Info(log.Fields{
 		"func":   "SearchUsers",
 		"filter": filter,
@@ -58,9 +59,10 @@ func DeleteUser(userid string) (err error) {
 		"userid": userid,
 	})
 	filter := map[string]interface{}{
-		"id": userid,
+		"id":   userid,
+		"type": "",
 	}
-	users, err := SearchUsers(filter)
+	users, err := SearchUserorGroup(filter)
 
 	if err != nil {
 		log.Warn(log.Fields{
@@ -86,6 +88,7 @@ func DeleteUser(userid string) (err error) {
 	}
 	return err
 }
+
 func CreateUser(user model.User) (userid string, err error) {
 	log.Info(log.Fields{
 		"func": "CreateUser",
@@ -108,8 +111,9 @@ func CreateUser(user model.User) (userid string, err error) {
 		return
 	}
 
-	users, err := SearchUsers(map[string]interface{}{
+	users, err := SearchUserorGroup(map[string]interface{}{
 		"name": user.Name,
+		"type": "group",
 	})
 	if err != nil {
 		return
@@ -127,16 +131,7 @@ func CreateUser(user model.User) (userid string, err error) {
 	})
 	return
 }
-func checkupdateUser(updater map[string]interface{}) (disableupdatefields []string) {
-	disableupdatefields = make([]string, 0)
-	for k, _ := range updater {
-		if _, have := allowupdateUser[k]; !have {
-			delete(updater, k)
-			disableupdatefields = append(disableupdatefields, k)
-		}
-	}
-	return
-}
+
 func UpdateUser(id string, updater map[string]interface{}) (err error) {
 	log.Info(log.Fields{
 		"func":    "UpdateUser",
@@ -144,12 +139,12 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 		"updater": updater,
 	})
 
-	errfields := checkupdateUser(updater)
+	errfields := checkupdate(updater, allowupdateUser)
 	if len(errfields) > 0 {
 		return model.NewErrData(model.FieldCannotupdate, errfields)
 	}
 	db := dao.DB()
-	err = db.Table("user").Where("id = ?", id).Updates(updater).Error
+	err = db.Table("user").Where("id = ?", id).Where("type = ''").Updates(updater).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"func":    "UpdateUser Updates",
