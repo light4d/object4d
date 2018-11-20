@@ -31,7 +31,7 @@ func user_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	filter := moehttp.Getfilter(req)
 	filter["type"] = ""
-	us, err := service.SearchUserorGroup(filter)
+	us, err := service.SearchUser(filter)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()

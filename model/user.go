@@ -10,15 +10,18 @@ import (
 type User struct {
 	ID          string
 	Name        string
-	Password    string `json:"-"`
 	Type        string `json:"-"`
 	Face        string
-	Parent      string
 	Registetime interface{}
+	Password    string `json:"-"`
+	Parent      string `json:"-"`
 }
 
 func (u *User) FixShow() *User {
-	u.Registetime = (u.Registetime.(time.Time)).Format(utils.DateTimeFormart)
+	if u.Registetime != nil {
+		u.Registetime = (u.Registetime.(time.Time)).Format(utils.DateTimeFormart)
+	}
+
 	return u
 }
 func DBPassword(password string) string {

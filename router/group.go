@@ -31,7 +31,7 @@ func group_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	filter := moehttp.Getfilter(req)
 	filter["type"] = "group"
-	gs, err := service.SearchUserorGroup(filter)
+	gs, err := service.SearchUser(filter)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
@@ -43,7 +43,7 @@ func group_get(resp http.ResponseWriter, req *http.Request) {
 func group_post(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 
-	group := model.User{}
+	group := model.Group{}
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		result.Code = -1

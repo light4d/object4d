@@ -1,13 +1,20 @@
 package model
 
-import "time"
+import (
+	"github.com/gobestsdk/gobase/utils"
+	"time"
+)
 
 type Group struct {
-	ID   string
-	Name string
-	//Owner 管理员ID
-	Owner      string
-	Password   string
-	Face       string
-	Createtime time.Time
+	ID          string
+	Name        string
+	Type        string `json:"-"`
+	Face        string
+	Parent      string
+	Registetime interface{}
+}
+
+func (u *Group) FixShow() *Group {
+	u.Registetime = (u.Registetime.(time.Time)).Format(utils.DateTimeFormart)
+	return u
 }

@@ -27,7 +27,7 @@ func checkandfixCreateUser(user *model.User) (err error) {
 
 	return
 }
-func SearchUserorGroup(filter map[string]interface{}) (result []model.User, err error) {
+func SearchUser(filter map[string]interface{}) (result []model.User, err error) {
 	log.Info(log.Fields{
 		"func":   "SearchUsers",
 		"filter": filter,
@@ -62,7 +62,7 @@ func DeleteUser(userid string) (err error) {
 		"id":   userid,
 		"type": "",
 	}
-	users, err := SearchUserorGroup(filter)
+	users, err := SearchUser(filter)
 
 	if err != nil {
 		log.Warn(log.Fields{
@@ -111,7 +111,7 @@ func CreateUser(user model.User) (userid string, err error) {
 		return
 	}
 
-	users, err := SearchUserorGroup(map[string]interface{}{
+	users, err := SearchUser(map[string]interface{}{
 		"name": user.Name,
 		"type": "group",
 	})

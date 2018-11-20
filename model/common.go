@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type CommonResp struct {
 	Error  interface{}
 	Code   int
@@ -12,7 +14,7 @@ type Err struct {
 }
 
 func (e Err) Error() string {
-	return e.Detail
+	return e.Detail + ":" + fmt.Sprint(e.Data)
 }
 
 func NewErr(detail string) error {
