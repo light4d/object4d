@@ -33,6 +33,7 @@ func group_get(resp http.ResponseWriter, req *http.Request) {
 	filter["type"] = "group"
 	gs, err := service.SearchUserorGroup(filter)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 	} else {
 		result.Result = gs
@@ -45,12 +46,14 @@ func group_post(resp http.ResponseWriter, req *http.Request) {
 	group := model.User{}
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &group)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
@@ -58,6 +61,7 @@ func group_post(resp http.ResponseWriter, req *http.Request) {
 	uid := getuid(req)
 	groupid, err := service.CreateGroup(uid, group)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
@@ -73,6 +77,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 
 	id := req.URL.Query().Get("id")
 	if id == "" {
+		result.Code = -1
 		result.Error = errors.New("id不能为空")
 		moehttp.Endresp(result, resp)
 		return
@@ -80,6 +85,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 	updater := make(map[string]interface{})
 	err := moehttp.Unmarshalreqbody(req, &updater)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
@@ -87,6 +93,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 	uid := getuid(req)
 	err = service.UpdateGroup(uid, id, updater)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 	}
 	moehttp.Endresp(result, resp)
@@ -100,6 +107,7 @@ func group_delete(resp http.ResponseWriter, req *http.Request) {
 		err := service.DeleteGroup(uid, groupid)
 		if err != nil {
 			result.Error = err.Error()
+			result.Code = -1
 		}
 		moehttp.Endresp(result, resp)
 		return

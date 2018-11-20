@@ -27,18 +27,21 @@ func login_post(resp http.ResponseWriter, req *http.Request) {
 	m := map[string]string{}
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &m)
 	if err != nil {
+		result.Code = -1
 		result.Error = err
 		moehttp.Endresp(result, resp)
 		return
 	}
 	t, err := service.Login(m["id"], m["password"])
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return

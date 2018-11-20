@@ -22,11 +22,13 @@ func checktoken(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	c, err := req.Cookie("token")
 	if err != nil {
+		result.Code = -2
 		result.Error = "nedd token"
 		moehttp.Endresp(result, resp)
 		return
 	}
 	if service.Checktoken(c.Value) == "" {
+		result.Code = -2
 		result.Error = errors.New("need token")
 		moehttp.Endresp(result, resp)
 		return

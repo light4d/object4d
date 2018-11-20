@@ -93,7 +93,7 @@ func DeleteGroup(who string, groupid string) (err error) {
 	if users[0].Parent != who {
 		return errors.New("you no permission delete this group")
 	}
-	err = dao.DB().Where(filter).Table("user").Delete(&model.User{}).RowsAffected
+	err = dao.DB().Where(filter).Table("user").Delete(&model.User{}).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"Model.Delete": users,

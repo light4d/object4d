@@ -33,6 +33,7 @@ func user_get(resp http.ResponseWriter, req *http.Request) {
 	filter["type"] = ""
 	us, err := service.SearchUserorGroup(filter)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 	} else {
 		result.Result = us
@@ -45,12 +46,14 @@ func user_post(resp http.ResponseWriter, req *http.Request) {
 	user := model.User{}
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
@@ -58,6 +61,7 @@ func user_post(resp http.ResponseWriter, req *http.Request) {
 
 	userid, err := service.CreateUser(user)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
@@ -73,6 +77,7 @@ func user_put(resp http.ResponseWriter, req *http.Request) {
 
 	id := req.URL.Query().Get("id")
 	if id == "" {
+		result.Code = -1
 		result.Error = errors.New("id不能为空")
 		moehttp.Endresp(result, resp)
 		return
@@ -80,12 +85,14 @@ func user_put(resp http.ResponseWriter, req *http.Request) {
 	updater := make(map[string]interface{})
 	err := moehttp.Unmarshalreqbody(req, &updater)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 	err = service.UpdateUser(id, updater)
 	if err != nil {
+		result.Code = -1
 		result.Error = err.Error()
 	}
 	moehttp.Endresp(result, resp)
@@ -98,6 +105,7 @@ func user_delete(resp http.ResponseWriter, req *http.Request) {
 	if userid != "" {
 		err := service.DeleteUser(userid)
 		if err != nil {
+			result.Code = -1
 			result.Error = err.Error()
 		}
 		moehttp.Endresp(result, resp)
