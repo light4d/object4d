@@ -112,8 +112,8 @@ func CreateUser(user model.User) (userid string, err error) {
 	}
 
 	users, err := SearchUser(map[string]interface{}{
-		"name": user.Name,
-		"type": "group",
+		"id":   user.ID,
+		"type": "",
 	})
 	if err != nil {
 		return

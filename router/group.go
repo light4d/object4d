@@ -30,8 +30,8 @@ func group(resp http.ResponseWriter, req *http.Request) {
 func group_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	filter := moehttp.Getfilter(req)
-	filter["type"] = "group"
-	gs, err := service.SearchUser(filter)
+
+	gs, err := service.SearchGroup(filter)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
@@ -98,6 +98,36 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 	}
 	moehttp.Endresp(result, resp)
 }
+
+func group_setowner(resp http.ResponseWriter, req *http.Request) {
+	result := model.CommonResp{}
+
+	id := req.URL.Query().Get("id")
+	if id == "" {
+		result.Code = -1
+		result.Error = errors.New("id不能为空")
+		moehttp.Endresp(result, resp)
+		return
+	}
+	updater := struct {
+		Owner string
+	}{}
+	err := moehttp.Unmarshalreqbody(req, &updater)
+	if err != nil {
+		result.Code = -1
+		result.Error = err.Error()
+		moehttp.Endresp(result, resp)
+		return
+	}
+	uid := getuid(req)
+	err = service.SetOwner(uid, updater.Owner, id)
+	if err != nil {
+		result.Code = -1
+		result.Error = err.Error()
+	}
+	moehttp.Endresp(result, resp)
+}
+
 func group_delete(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	uid := getuid(req)

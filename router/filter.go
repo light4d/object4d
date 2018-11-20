@@ -38,6 +38,10 @@ func checktoken(resp http.ResponseWriter, req *http.Request) {
 			user(resp, req)
 		case "/group":
 			group(resp, req)
+		case "/group/owner":
+			group_setowner(resp, req)
+		case "/group/user":
+			group_user(resp, req)
 		}
 		return
 	}

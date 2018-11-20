@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type GroupUser struct {
+type Groupuser struct {
 	ID       string
 	User     string
 	Jointime time.Time
