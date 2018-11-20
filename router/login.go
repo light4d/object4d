@@ -47,6 +47,7 @@ func login_post(resp http.ResponseWriter, req *http.Request) {
 		UserID string
 		Token  string
 	}{UserID: m["id"], Token: t}
-
+	cookie := http.Cookie{Name: "token", Value: t, Path: "/"}
+	http.SetCookie(resp, &cookie)
 	moehttp.Endresp(result, resp)
 }
