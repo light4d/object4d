@@ -3,6 +3,7 @@ package model
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/gobestsdk/gobase/utils"
 	"time"
 )
 
@@ -11,10 +12,11 @@ type User struct {
 	Name        string
 	Password    string `json:"-"`
 	Face        string
-	RegisteTime time.Time
+	Registetime interface{}
 }
 
 func (u *User) FixShow() *User {
+	u.Registetime = (u.Registetime.(time.Time)).Format(utils.DateTimeFormart)
 	return u
 }
 func DBPassword(password string) string {

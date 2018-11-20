@@ -2,6 +2,6 @@
   "http_port":30000,
   "mysql":"root:123456@tcp(localhost:3306)/yourfs?charset=utf8mb4&parseTime=true",
   "redis":{
-    "addr":"localhost:36379"
+    "addr":"127.0.0.1:36379"
   }
 }

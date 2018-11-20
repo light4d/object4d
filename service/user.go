@@ -1,26 +1,29 @@
 package service
 
 import (
-	"errors"
 	"github.com/gobestsdk/gobase/log"
 
 	"github.com/light4d/yourfs/dao"
 	"github.com/light4d/yourfs/model"
+	"regexp"
 	"time"
 )
 
 var allowupdateUser = map[string]interface{}{
-	"birth":        "",
-	"name":         "",
-	"password":     "",
-	"gender":       "",
-	"face":         "",
-	"introduction": "",
+	"name":     "",
+	"password": "",
+	"face":     "",
 }
 
 func checkandfixCreateUser(user *model.User) (err error) {
 	//TODO your code
-	user.RegisteTime = time.Now()
+
+	m, err := regexp.Match("^[a-zA-Z0-9_-]{4,16}$", []byte(user.ID))
+	if user.ID == "" || err != nil || !m {
+		return model.NewErrData("用户名格式不对", user.ID)
+	}
+	user.Password = model.DBPassword(user.Password)
+	user.Registetime = time.Now()
 	return
 }
 func SearchUsers(filter map[string]interface{}) (result []model.User, err error) {
@@ -174,24 +177,4 @@ func GetUser(userid string) (*model.User, error) {
 		return nil, model.ErrLenBigThan1
 	}
 
-}
-func Login(userid, password string) error {
-	existuser, err := GetUser(userid)
-	log.Info(log.Fields{
-		"loginuser": existuser,
-		"err":       err.Error(),
-	})
-	if err != nil {
-
-		return err
-	}
-	if existuser == nil {
-		return errors.New("用户未注册")
-
-	}
-	if (existuser.Password) != model.DBPassword(password) {
-		return errors.New("用户名密码错误")
-
-	}
-	return nil
 }

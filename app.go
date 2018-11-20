@@ -40,10 +40,7 @@ func main() {
 		config.ParseConfig(os.Args[1])
 	}
 
-	//config.Init("local.config.json")
-
 	router.Init()
-
 	server.Run()
 }
 

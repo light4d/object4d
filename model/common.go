@@ -1,7 +1,7 @@
 package model
 
 type CommonResp struct {
-	Error  error
+	Error  interface{}
 	Code   int
 	Result interface{}
 }

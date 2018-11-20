@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	s                     = httpserver.New()
+	appname               = "yourfs"
+	s                     = httpserver.New(appname)
 	methodnotfounthandler = &MethodNotFoundHandler{}
 )
 

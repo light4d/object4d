@@ -30,7 +30,12 @@ func user(resp http.ResponseWriter, req *http.Request) {
 func user_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	filter := moehttp.Getfilter(req)
-	result.Result, result.Error = service.SearchUsers(filter)
+	us, err := service.SearchUsers(filter)
+	if err != nil {
+		result.Error = err.Error()
+	} else {
+		result.Result = us
+	}
 	moehttp.Endresp(result, resp)
 }
 func user_post(resp http.ResponseWriter, req *http.Request) {
@@ -39,20 +44,20 @@ func user_post(resp http.ResponseWriter, req *http.Request) {
 	user := model.User{}
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		result.Error = err
+		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		result.Error = err
+		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
 
 	userid, err := service.CreateUser(user)
 	if err != nil {
-		result.Error = err
+		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
@@ -74,11 +79,14 @@ func user_put(resp http.ResponseWriter, req *http.Request) {
 	updater := make(map[string]interface{})
 	err := moehttp.Unmarshalreqbody(req, &updater)
 	if err != nil {
-		result.Error = err
+		result.Error = err.Error()
 		moehttp.Endresp(result, resp)
 		return
 	}
-	result.Error = service.UpdateUser(id, updater)
+	err = service.UpdateUser(id, updater)
+	if err != nil {
+		result.Error = err.Error()
+	}
 	moehttp.Endresp(result, resp)
 }
 func user_delete(resp http.ResponseWriter, req *http.Request) {
@@ -87,8 +95,10 @@ func user_delete(resp http.ResponseWriter, req *http.Request) {
 	userid := req.URL.Query().Get("id")
 
 	if userid != "" {
-		result.Error = service.DeleteUser(userid)
-
+		err := service.DeleteUser(userid)
+		if err != nil {
+			result.Error = err.Error()
+		}
 		moehttp.Endresp(result, resp)
 		return
 	} else {

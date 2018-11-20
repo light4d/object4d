@@ -14,12 +14,14 @@ func Redis() *redis.Client {
 	})
 
 	pong, err := client.Ping().Result()
-	log.Info(log.Fields{
-		"redis": pong,
-		"err":   err,
-	})
-	if err == nil {
-		panic(err)
+
+	if err != nil {
+		log.Fatal(log.Fields{
+			"redis":  pong,
+			"err":    err,
+			"detail": config.APPConfig.Redis,
+		})
+
 	}
 	return client
 }
