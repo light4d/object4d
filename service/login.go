@@ -44,3 +44,11 @@ func Token() string {
 	token := fmt.Sprintf("%x", h.Sum(nil))
 	return token
 }
+
+func Checktoken(token string) string {
+	uid, err := dao.Redis().Get(token).Result()
+	if err != nil {
+		return ""
+	}
+	return uid
+}

@@ -5,6 +5,7 @@ import (
 )
 
 func Init() {
-	http.HandleFunc("/user", user)
+	http.HandleFunc("/", checktoken)
 	http.HandleFunc("/login", login)
+
 }
