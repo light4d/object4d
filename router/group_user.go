@@ -12,12 +12,13 @@ func group_user(resp http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		group_user_get(resp, req)
-	case http.MethodPost:
-		group_user_post(resp, req)
-	case http.MethodPut:
-		group_user_put(resp, req)
-	case http.MethodDelete:
-		group_user_delete(resp, req)
+	//
+	//case http.MethodPost:
+	//	group_user_post(resp, req)
+	//case http.MethodPut:
+	//	group_user_put(resp, req)
+	//case http.MethodDelete:
+	//	group_user_delete(resp, req)
 	default:
 		moehttp.Options(req, resp)
 	}
@@ -26,7 +27,7 @@ func group_user(resp http.ResponseWriter, req *http.Request) {
 func group_user_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
 	filter := moehttp.Getfilter(req)
-	gs, err := service.SearchUser(filter)
+	gs, err := service.SearchGroupuser(filter)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()

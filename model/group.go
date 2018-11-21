@@ -15,6 +15,9 @@ type Group struct {
 }
 
 func (u *Group) FixShow() *Group {
-	u.Registetime = (u.Registetime.(time.Time)).Format(utils.DateTimeFormart)
+	if u.Registetime != nil {
+		u.Registetime = (u.Registetime.(time.Time)).Format(utils.DateTimeFormart)
+	}
+
 	return u
 }

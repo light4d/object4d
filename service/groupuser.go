@@ -8,6 +8,31 @@ import (
 	"github.com/light4d/yourfs/model"
 )
 
+func SearchGroupuser(filter map[string]interface{}) (result []model.Groupuser, err error) {
+	log.Info(log.Fields{
+		"func":   "SearchGroupuser",
+		"filter": filter,
+	})
+
+	db := dao.DB()
+	err = db.Table("groupuser").Find(&result, filter).Error
+	if err != nil {
+		log.Warn(log.Fields{
+			"Find":   "groupuser",
+			"Result": result,
+			"Err":    err.Error(),
+		})
+	}
+	for i, _ := range result {
+		result[i] = *(result[i].FixShow())
+	}
+	log.Info(log.Fields{
+		"func":   "SearchGroup",
+		"result": result,
+	})
+	return
+
+}
 func AddGroupusers(who, group string, us []string) (err error) {
 
 	log.Info(log.Fields{
