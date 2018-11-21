@@ -16,6 +16,5 @@ func (u *Groupuser) FixShow() *Groupuser {
 	if u.Jointime != nil {
 		u.Jointime = (u.Jointime.(time.Time)).Format(utils.DateTimeFormart)
 	}
-
 	return u
 }
