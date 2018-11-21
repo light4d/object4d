@@ -17,6 +17,8 @@ func checkandfixCreateObject(object *model.Object) (err error) {
 	object.Createtime = time.Now()
 	return
 }
+func get(who,bucket,object string){
+}
 func SearchObject(u string,filter map[string]interface{}) (result []model.Object, err error) {
 	log.Info(log.Fields{
 		"func":   "SearchObjects",
