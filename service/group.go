@@ -28,22 +28,13 @@ func SetOwner(who, newowner, groupid string) (err error) {
 		"id":   groupid,
 		"type": "group",
 	}
-	groups, err := SearchGroup(filter)
-	if err != nil {
-		log.Warn(log.Fields{
-			"GetGroups": groups,
-			"Err":       err.Error(),
-		})
-		return err
+
+	g, ex := CheckGroupExist(groupid)
+	if !ex {
+		return errors.New("group not found")
 	}
 
-	if len(groups) == 0 {
-		return model.ErrLenEqual0
-	}
-	if len(groups) > 1 {
-		return model.ErrLenBigThan1
-	}
-	if groups[0].Parent != who {
+	if g.Parent != who {
 		return errors.New("you no permission set this group")
 	}
 
@@ -73,7 +64,7 @@ func SetOwner(who, newowner, groupid string) (err error) {
 		}).Error
 	if err != nil {
 		log.Warn(log.Fields{
-			"Group.Update": groups,
+			"Group.Update": g,
 			"Where":        filter,
 			"Err":          err.Error(),
 		})
@@ -88,6 +79,11 @@ func CreateGroup(parend string, group model.Group) (groupid string, err error) {
 		"who":  parend,
 	})
 
+	_, ex := CheckGroupExist(group.ID)
+	if ex {
+		return "", errors.New("group already exist")
+	}
+
 	err = checkandfixCreateGroup(&group)
 	if err != nil {
 		return
@@ -95,7 +91,7 @@ func CreateGroup(parend string, group model.Group) (groupid string, err error) {
 	group.Type = "group"
 	group.Parent = parend
 	db := dao.DB()
-	err = db.Model(new(model.Group)).Create(&group).Error
+	err = db.Table("user").Create(&group).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"user":       group,
@@ -104,9 +100,8 @@ func CreateGroup(parend string, group model.Group) (groupid string, err error) {
 		})
 		return
 	}
-
 	gs, err := SearchGroup(map[string]interface{}{
-		"name": group.Name,
+		"id": group.ID,
 	})
 	if err != nil {
 		return
@@ -117,6 +112,35 @@ func CreateGroup(parend string, group model.Group) (groupid string, err error) {
 	if len(gs) > 1 {
 		return "", model.ErrLenBigThan1
 	}
+
+	groupuser := &model.Groupuser{
+		ID:       group.ID,
+		User:     parend,
+		Jointime: time.Now(),
+	}
+	err = db.Table("groupuser").Create(groupuser).Error
+	if err != nil {
+		log.Warn(log.Fields{
+			"groupuser":       groupuser,
+			"CreateGroupuser": "DB",
+			"Err":             err.Error(),
+		})
+		return
+	}
+	gus, err := SearchGroupuser(map[string]interface{}{
+		"id":   group.ID,
+		"user": parend,
+	})
+	if err != nil {
+		return
+	}
+	if len(gus) == 0 {
+		return "", model.ErrLenNotEqual1
+	}
+	if len(gus) > 1 {
+		return "", model.ErrLenBigThan1
+	}
+
 	groupid = gs[0].ID
 	log.Info(log.Fields{
 		"func":    "CreateGroup",
@@ -124,7 +148,13 @@ func CreateGroup(parend string, group model.Group) (groupid string, err error) {
 	})
 	return
 }
-
+func CheckGroupExist(group string) (*model.Group, bool) {
+	gs, err := SearchGroup(map[string]interface{}{"id": group})
+	if err == nil && len(gs) == 1 {
+		return &(gs[0]), true
+	}
+	return nil, false
+}
 func SearchGroup(filter map[string]interface{}) (result []model.Group, err error) {
 	log.Info(log.Fields{
 		"func":   "SearchGroup",
@@ -163,29 +193,20 @@ func DeleteGroup(who string, groupid string) (err error) {
 		"id":   groupid,
 		"type": "group",
 	}
-	groups, err := SearchGroup(filter)
-	if err != nil {
-		log.Warn(log.Fields{
-			"GetUsers": groups,
-			"Err":      err.Error(),
-		})
-		return err
+
+	g, ex := CheckGroupExist(groupid)
+	if !ex {
+		return errors.New("group not found")
 	}
 
-	if len(groups) == 0 {
-		return model.ErrLenEqual0
-	}
-	if len(groups) > 1 {
-		return model.ErrLenBigThan1
-	}
-	if groups[0].Parent != who {
-		return errors.New("you no permission delete this group")
+	if g.Parent != who {
+		return errors.New("you no permission set this group")
 	}
 
-	err = dao.DB().Where(filter).Table("user").Model(new(model.Group)).Delete(&model.User{}).Error
+	err = dao.DB().Where(filter).Table("user").Delete(&model.User{}).Error
 	if err != nil {
 		log.Warn(log.Fields{
-			"Model.Delete": groups,
+			"Model.Delete": g,
 			"Where":        filter,
 			"Err":          err.Error(),
 		})
@@ -215,27 +236,17 @@ func UpdateGroup(who, groupid string, updater map[string]interface{}) (err error
 		"id":   groupid,
 		"type": "group",
 	}
-	groups, err := SearchGroup(filter)
-	if err != nil {
-		log.Warn(log.Fields{
-			"GetUsers": groups,
-			"Err":      err.Error(),
-		})
-		return err
-	}
 
-	if len(groups) == 0 {
-		return model.ErrLenEqual0
+	g, ex := CheckGroupExist(groupid)
+	if !ex {
+		return errors.New("group not found")
 	}
-	if len(groups) > 1 {
-		return model.ErrLenBigThan1
-	}
-	if groups[0].Parent != who {
-		return errors.New("you no permission delete this group")
+	if g.Parent != who {
+		return errors.New("you no permission set this group")
 	}
 
 	db := dao.DB()
-	err = db.Model(new(model.Group)).Table("user").Where("id = ?", groupid).Where("type = 'group'").Updates(updater).Error
+	err = db.Model(new(model.Group)).Table("user").Where(filter).Updates(updater).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"func":    "UpdateUser Updates",
