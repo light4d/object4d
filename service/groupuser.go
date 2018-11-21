@@ -6,6 +6,7 @@ import (
 	"github.com/gobestsdk/gobase/log"
 	"github.com/light4d/yourfs/dao"
 	"github.com/light4d/yourfs/model"
+	"time"
 )
 
 func SearchGroupuser(filter map[string]interface{}) (result []model.Groupuser, err error) {
@@ -40,37 +41,39 @@ func AddGroupusers(who, group string, us []string) (err error) {
 		"detail": who + " add users: " + fmt.Sprint(us) + " to " + group,
 	})
 
-	gs, err := SearchGroup(map[string]interface{}{
-		"id": group,
-	})
-	if err != nil {
-		return
+	g, ex := CheckGroupExist(group)
+	if !ex {
+		return errors.New("group not found")
 	}
-	if len(gs) == 0 {
-		return model.ErrLenNotEqual1
-	}
-	if len(gs) > 1 {
-		return model.ErrLenBigThan1
-	}
-	if gs[0].Parent != who {
-		return errors.New("you no permission delete this group")
+	if g.Parent != who {
+		return errors.New("you no permission add user to this group")
 	}
 
+	for _, u := range us {
+		_, ex := CheckUserExist(u)
+		if !ex {
+			return model.NewErrData("user not exist", u)
+		}
+	}
 	db := dao.DB()
-	err = db.Model(new(model.Group)).Create(&group).Error
-	if err != nil {
-		log.Warn(log.Fields{
-			"user":       group,
-			"CreateUser": "DB",
-			"Err":        err.Error(),
-		})
-		return
+	for _, u := range us {
+		err = db.Table("groupuser").Create(&model.Groupuser{
+			ID:       group,
+			User:     u,
+			Jointime: time.Now(),
+		}).Error
+		if err != nil {
+			log.Warn(log.Fields{
+				"groupuser":       group,
+				"CreateGroupuser": "DB",
+				"Err":             err.Error(),
+			})
+			db.Rollback()
+			return
+		}
 	}
+	db.Commit()
 
-	log.Info(log.Fields{
-		"func":    "CreateGroup",
-		"groupid": gs[0].ID,
-	})
 	return
 }
 

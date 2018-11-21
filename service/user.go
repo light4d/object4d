@@ -5,6 +5,7 @@ import (
 
 	"github.com/light4d/yourfs/dao"
 	"github.com/light4d/yourfs/model"
+	"github.com/qiniu/x/errors.v7"
 	"regexp"
 	"time"
 )
@@ -26,6 +27,16 @@ func checkandfixCreateUser(user *model.User) (err error) {
 	user.Registetime = time.Now()
 
 	return
+}
+
+func CheckUserExist(uid string) (*model.User, bool) {
+	us, err := SearchUser(map[string]interface{}{
+		"id": uid,
+	})
+	if err == nil && len(us) == 1 {
+		return &(us[0]), true
+	}
+	return nil, false
 }
 func SearchUser(filter map[string]interface{}) (result []model.User, err error) {
 	log.Info(log.Fields{
@@ -62,26 +73,15 @@ func DeleteUser(userid string) (err error) {
 		"id":   userid,
 		"type": "",
 	}
-	users, err := SearchUser(filter)
 
-	if err != nil {
-		log.Warn(log.Fields{
-			"GetUsers": users,
-			"Err":      err.Error(),
-		})
-		return err
-	}
-
-	if len(users) == 0 {
-		return model.ErrLenEqual0
-	}
-	if len(users) > 1 {
-		return model.ErrLenBigThan1
+	u, ex := CheckUserExist(userid)
+	if !ex {
+		return errors.New("user not found")
 	}
 	err = dao.DB().Where(filter).Table("user").Delete(&model.User{}).Error
 	if err != nil {
 		log.Warn(log.Fields{
-			"Model.Delete": users,
+			"Model.Delete": u,
 			"Where":        filter,
 			"Err":          err.Error(),
 		})
@@ -95,9 +95,14 @@ func CreateUser(user model.User) (userid string, err error) {
 		"user": user,
 	})
 
+	_, ex := CheckUserExist(userid)
+	if ex {
+		return "", errors.New("user already exist")
+	}
+
 	err = checkandfixCreateUser(&user)
 	if err != nil {
-		return
+		return "", err
 	}
 
 	db := dao.DB()
@@ -138,11 +143,16 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 		"id":      id,
 		"updater": updater,
 	})
-
 	errfields := checkupdate(updater, allowupdateUser)
 	if len(errfields) > 0 {
 		return model.NewErrData(model.FieldCannotupdate, errfields)
 	}
+
+	_, ex := CheckUserExist(id)
+	if !ex {
+		return errors.New("user not found")
+	}
+
 	db := dao.DB()
 	err = db.Table("user").Where("id = ?", id).Where("type = ''").Updates(updater).Error
 	if err != nil {
@@ -154,22 +164,4 @@ func UpdateUser(id string, updater map[string]interface{}) (err error) {
 		})
 	}
 	return
-}
-
-func GetUser(userid string) (*model.User, error) {
-	db := dao.DB()
-	users := make([]model.User, 0)
-	err := db.Table("user").Where("id = ?", userid).Find(&users).Error
-	if err != nil {
-		return nil, err
-	}
-	if len(users) == 0 {
-		return nil, nil
-	}
-	if len(users) == 1 {
-		return &(users[0]), nil
-	} else {
-		return nil, model.ErrLenBigThan1
-	}
-
 }

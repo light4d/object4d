@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"github.com/gobestsdk/gobase/log"
+
 	"github.com/light4d/yourfs/dao"
 	"github.com/light4d/yourfs/model"
 	"io"
@@ -13,20 +13,11 @@ import (
 )
 
 func Login(userid, password string) (string, error) {
-	existuser, err := GetUser(userid)
-
-	if err != nil {
-		log.Info(log.Fields{
-			"loginuser": existuser,
-			"err":       err.Error(),
-		})
-		return "", err
+	existuser, ex := CheckUserExist(userid)
+	if !ex {
+		return "", errors.New("user not found")
 	}
-	if existuser == nil {
-		return "", errors.New("用户未注册")
 
-	}
-	fmt.Println(existuser.Password, model.DBPassword(password))
 	if (existuser.Password) != model.DBPassword(password) {
 		return "", errors.New("用户名密码错误")
 	}
