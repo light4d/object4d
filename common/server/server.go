@@ -15,7 +15,7 @@ func Run() {
 
 	M.SetPort(config.APPConfig.HttpPort)
 	F.SetPort(config.APPConfig.FsPort)
-	M.Run()
+	go M.Run()
 	F.Run()
 }
 
