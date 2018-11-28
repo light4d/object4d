@@ -11,11 +11,11 @@ import (
 func getuid(req *http.Request) string {
 	c, err := req.Cookie("token")
 	if err != nil {
-
 		return ""
 	}
 	return service.Checktoken(c.Value)
 }
+
 func checktoken(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Content-Type", "application/json")
 

@@ -20,7 +20,9 @@ func object(resp http.ResponseWriter, req *http.Request) {
 }
 
 func object_get(resp http.ResponseWriter, req *http.Request) {
+	//uid:=getuid(req)
 
+	//service.GetObject(uid)
 }
 func object_post(resp http.ResponseWriter, req *http.Request) {
 

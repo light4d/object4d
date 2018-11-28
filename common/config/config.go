@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	HttpPort int    `json:"http_port"`
+	FsPort   int    `json:"fs_port"`
 	Mysql    string `json:"mysql"`
 	Redis    struct {
 		Addr     string `json:"addr"`

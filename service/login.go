@@ -24,7 +24,7 @@ func Login(userid, password string) (string, error) {
 
 	t := Token()
 
-	dao.Redis().Set(t, userid, time.Hour*2)
+	dao.Redis().Set(t, userid, time.Hour*48)
 	return t, nil
 }
 
