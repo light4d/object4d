@@ -5,10 +5,10 @@ import (
 
 	"io/ioutil"
 
-	moehttp "github.com/light4d/yourfs/common/http"
 	"github.com/light4d/yourfs/model"
 	"net/http"
 
+	"github.com/gobestsdk/gobase/httpserver"
 	"github.com/light4d/yourfs/service"
 )
 
@@ -18,7 +18,7 @@ func login(resp http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		login_post(resp, req)
 	default:
-		moehttp.Options(req, resp)
+		httpserver.Options(req, resp)
 	}
 }
 
@@ -29,21 +29,21 @@ func login_post(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &m)
 	if err != nil {
 		result.Code = -1
 		result.Error = err
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	t, err := service.Login(m["id"], m["password"])
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	result.Result = struct {
@@ -52,5 +52,5 @@ func login_post(resp http.ResponseWriter, req *http.Request) {
 	}{UserID: m["id"], Token: t}
 	cookie := http.Cookie{Name: "token", Value: t, Path: "/"}
 	http.SetCookie(resp, &cookie)
-	moehttp.Endresp(result, resp)
+	httpserver.Endresp(result, resp)
 }

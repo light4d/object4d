@@ -1,10 +1,11 @@
 package router
 
 import (
-	moehttp "github.com/light4d/yourfs/common/http"
 	"github.com/light4d/yourfs/model"
 	"github.com/light4d/yourfs/service"
-	"github.com/qiniu/x/errors.v7"
+
+	"errors"
+	"github.com/gobestsdk/gobase/httpserver"
 	"net/http"
 )
 
@@ -24,13 +25,13 @@ func checktoken(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -2
 		result.Error = "nedd token"
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	if service.Checktoken(c.Value) == "" {
 		result.Code = -2
 		result.Error = errors.New("need token")
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	} else {
 		switch req.URL.Path {

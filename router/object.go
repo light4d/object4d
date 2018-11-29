@@ -1,7 +1,7 @@
 package router
 
 import (
-	moehttp "github.com/light4d/yourfs/common/http"
+	"github.com/gobestsdk/gobase/httpserver"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func object(resp http.ResponseWriter, req *http.Request) {
 	case http.MethodDelete:
 		object_delete(resp, req)
 	default:
-		moehttp.Options(req, resp)
+		httpserver.Options(req, resp)
 	}
 }
 

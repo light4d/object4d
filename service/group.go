@@ -4,7 +4,8 @@ import (
 	"github.com/gobestsdk/gobase/log"
 	"github.com/light4d/yourfs/dao"
 	"github.com/light4d/yourfs/model"
-	"github.com/qiniu/x/errors.v7"
+
+	"errors"
 	"regexp"
 	"time"
 )

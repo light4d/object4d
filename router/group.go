@@ -5,10 +5,10 @@ import (
 	"errors"
 	"io/ioutil"
 
-	moehttp "github.com/light4d/yourfs/common/http"
 	"github.com/light4d/yourfs/model"
 	"net/http"
 
+	"github.com/gobestsdk/gobase/httpserver"
 	"github.com/light4d/yourfs/service"
 )
 
@@ -24,12 +24,12 @@ func group(resp http.ResponseWriter, req *http.Request) {
 	case http.MethodDelete:
 		group_delete(resp, req)
 	default:
-		moehttp.Options(req, resp)
+		httpserver.Options(req, resp)
 	}
 }
 func group_get(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
-	filter := moehttp.Getfilter(req)
+	filter := httpserver.Getfilter(req)
 
 	gs, err := service.SearchGroup(filter)
 	if err != nil {
@@ -38,7 +38,7 @@ func group_get(resp http.ResponseWriter, req *http.Request) {
 	} else {
 		result.Result = gs
 	}
-	moehttp.Endresp(result, resp)
+	httpserver.Endresp(result, resp)
 }
 func group_post(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
@@ -48,14 +48,14 @@ func group_post(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &group)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	uid := getuid(req)
@@ -63,13 +63,13 @@ func group_post(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	result.Result = struct {
 		ID string
 	}{ID: groupid}
-	moehttp.Endresp(result, resp)
+	httpserver.Endresp(result, resp)
 }
 
 func group_put(resp http.ResponseWriter, req *http.Request) {
@@ -79,15 +79,15 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 	if id == "" {
 		result.Code = -1
 		result.Error = errors.New("id不能为空")
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	updater := make(map[string]interface{})
-	err := moehttp.Unmarshalreqbody(req, &updater)
+	err := httpserver.Unmarshalreqbody(req, &updater)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	uid := getuid(req)
@@ -96,7 +96,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 		result.Code = -1
 		result.Error = err.Error()
 	}
-	moehttp.Endresp(result, resp)
+	httpserver.Endresp(result, resp)
 }
 
 func group_setowner(resp http.ResponseWriter, req *http.Request) {
@@ -106,17 +106,17 @@ func group_setowner(resp http.ResponseWriter, req *http.Request) {
 	if id == "" {
 		result.Code = -1
 		result.Error = errors.New("id不能为空")
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	updater := struct {
 		Owner string
 	}{}
-	err := moehttp.Unmarshalreqbody(req, &updater)
+	err := httpserver.Unmarshalreqbody(req, &updater)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 	uid := getuid(req)
@@ -125,7 +125,7 @@ func group_setowner(resp http.ResponseWriter, req *http.Request) {
 		result.Code = -1
 		result.Error = err.Error()
 	}
-	moehttp.Endresp(result, resp)
+	httpserver.Endresp(result, resp)
 }
 
 func group_delete(resp http.ResponseWriter, req *http.Request) {
@@ -139,11 +139,11 @@ func group_delete(resp http.ResponseWriter, req *http.Request) {
 			result.Error = err.Error()
 			result.Code = -1
 		}
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	} else {
 		result.Error = errors.New("whick one do you want to delete?")
-		moehttp.Endresp(result, resp)
+		httpserver.Endresp(result, resp)
 		return
 	}
 
