@@ -4,8 +4,10 @@ import (
 	"github.com/light4d/yourfs/model"
 	"github.com/light4d/yourfs/service"
 
+	"encoding/json"
 	"errors"
 	"github.com/gobestsdk/gobase/httpserver"
+	"github.com/gobestsdk/gobase/log"
 	"net/http"
 )
 
@@ -25,13 +27,13 @@ func checktoken(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -2
 		result.Error = "nedd token"
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	if service.Checktoken(c.Value) == "" {
 		result.Code = -2
 		result.Error = errors.New("need token")
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	} else {
 		switch req.URL.Path {
@@ -46,4 +48,13 @@ func checktoken(resp http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
+}
+func Endresp(result model.CommonResp, resp http.ResponseWriter) {
+	log.Info(log.Fields{
+		"resp": result,
+	})
+	httpserver.Header(resp)
+
+	r, _ := json.Marshal(result)
+	resp.Write(r)
 }

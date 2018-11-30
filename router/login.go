@@ -29,21 +29,21 @@ func login_post(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &m)
 	if err != nil {
 		result.Code = -1
 		result.Error = err
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	t, err := service.Login(m["id"], m["password"])
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	result.Result = struct {
@@ -52,5 +52,5 @@ func login_post(resp http.ResponseWriter, req *http.Request) {
 	}{UserID: m["id"], Token: t}
 	cookie := http.Cookie{Name: "token", Value: t, Path: "/"}
 	http.SetCookie(resp, &cookie)
-	httpserver.Endresp(result, resp)
+	Endresp(result, resp)
 }

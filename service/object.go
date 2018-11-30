@@ -5,7 +5,6 @@ import (
 
 	"github.com/light4d/yourfs/dao"
 	"github.com/light4d/yourfs/model"
-	"time"
 )
 
 var allowupdateObject = map[string]interface{}{
@@ -14,7 +13,7 @@ var allowupdateObject = map[string]interface{}{
 
 func checkandfixCreateObject(object *model.Object) (err error) {
 	//TODO your code
-	object.Createtime = time.Now()
+
 	return
 }
 func get(who, bucket, object string) {

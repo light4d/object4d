@@ -38,7 +38,7 @@ func group_get(resp http.ResponseWriter, req *http.Request) {
 	} else {
 		result.Result = gs
 	}
-	httpserver.Endresp(result, resp)
+	Endresp(result, resp)
 }
 func group_post(resp http.ResponseWriter, req *http.Request) {
 	result := model.CommonResp{}
@@ -48,14 +48,14 @@ func group_post(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	err = json.Unmarshal(body, &group)
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	uid := getuid(req)
@@ -63,13 +63,13 @@ func group_post(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	result.Result = struct {
 		ID string
 	}{ID: groupid}
-	httpserver.Endresp(result, resp)
+	Endresp(result, resp)
 }
 
 func group_put(resp http.ResponseWriter, req *http.Request) {
@@ -79,7 +79,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 	if id == "" {
 		result.Code = -1
 		result.Error = errors.New("id不能为空")
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	updater := make(map[string]interface{})
@@ -87,7 +87,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	uid := getuid(req)
@@ -96,7 +96,7 @@ func group_put(resp http.ResponseWriter, req *http.Request) {
 		result.Code = -1
 		result.Error = err.Error()
 	}
-	httpserver.Endresp(result, resp)
+	Endresp(result, resp)
 }
 
 func group_setowner(resp http.ResponseWriter, req *http.Request) {
@@ -106,7 +106,7 @@ func group_setowner(resp http.ResponseWriter, req *http.Request) {
 	if id == "" {
 		result.Code = -1
 		result.Error = errors.New("id不能为空")
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	updater := struct {
@@ -116,7 +116,7 @@ func group_setowner(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		result.Code = -1
 		result.Error = err.Error()
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 	uid := getuid(req)
@@ -125,7 +125,7 @@ func group_setowner(resp http.ResponseWriter, req *http.Request) {
 		result.Code = -1
 		result.Error = err.Error()
 	}
-	httpserver.Endresp(result, resp)
+	Endresp(result, resp)
 }
 
 func group_delete(resp http.ResponseWriter, req *http.Request) {
@@ -139,11 +139,11 @@ func group_delete(resp http.ResponseWriter, req *http.Request) {
 			result.Error = err.Error()
 			result.Code = -1
 		}
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	} else {
 		result.Error = errors.New("whick one do you want to delete?")
-		httpserver.Endresp(result, resp)
+		Endresp(result, resp)
 		return
 	}
 
