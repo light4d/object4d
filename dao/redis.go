@@ -3,7 +3,7 @@ package dao
 import (
 	"github.com/go-redis/redis"
 	"github.com/gobestsdk/gobase/log"
-	"github.com/light4d/yourfs/common/config"
+	"github.com/light4d/object4d/common/config"
 )
 
 func Redis() *redis.Client {

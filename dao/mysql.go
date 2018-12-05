@@ -2,7 +2,7 @@ package dao
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/light4d/yourfs/common/config"
+	"github.com/light4d/object4d/common/config"
 )
 
 func DB() *gorm.DB {

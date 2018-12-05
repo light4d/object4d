@@ -2,7 +2,7 @@ package dao
 
 import (
 	"github.com/gobestsdk/gobase/log"
-	"github.com/light4d/yourfs/model"
+	"github.com/light4d/object4d/model"
 
 	"github.com/minio/minio-go"
 )

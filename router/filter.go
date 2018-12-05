@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/light4d/yourfs/model"
-	"github.com/light4d/yourfs/service"
+	"github.com/light4d/object4d/model"
+	"github.com/light4d/object4d/service"
 
 	"encoding/json"
 	"errors"

@@ -5,11 +5,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/light4d/yourfs/common/server"
+	"github.com/light4d/object4d/common/server"
 
 	"github.com/gobestsdk/gobase/log"
-	"github.com/light4d/yourfs/common/config"
-	"github.com/light4d/yourfs/router"
+	"github.com/light4d/object4d/common/config"
+	"github.com/light4d/object4d/router"
 )
 
 func main() {

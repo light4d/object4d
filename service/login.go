@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/light4d/yourfs/dao"
-	"github.com/light4d/yourfs/model"
+	"github.com/light4d/object4d/dao"
+	"github.com/light4d/object4d/model"
 	"io"
 	"strconv"
 	"time"
