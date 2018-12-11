@@ -1,2 +1,4 @@
-# yourfs
-分布式对象存储服务
+# object4d 时空对象存储管理服务
+
+## design
+![](doc/design.png)
