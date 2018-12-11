@@ -8,8 +8,6 @@ import (
 )
 
 type Config struct {
-	HttpPort     int    `json:"http_port"`
-	FsPort       int    `json:"fs_port"`
 	Object4dPort int    `json:"object4d_port"`
 	Mysql        string `json:"mysql"`
 	Redis        struct {
@@ -21,8 +19,7 @@ type Config struct {
 
 var (
 	APPConfig Config = Config{
-		HttpPort: 30000,
-		Mysql:    "",
+		Mysql: "",
 	}
 )
 
