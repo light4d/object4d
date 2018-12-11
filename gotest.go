@@ -1,8 +1,8 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"github.com/qiniu/x/errors.v7"
 )
 
 func main() {
