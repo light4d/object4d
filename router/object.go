@@ -18,7 +18,7 @@ func object4d(resp http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		object4d_post(resp, req)
 	default:
-		httpserver.Options(req, resp)
+		httpserver.Options(req, resp, "application/octet-stream", AccessControlAllowMethods())
 	}
 }
 
