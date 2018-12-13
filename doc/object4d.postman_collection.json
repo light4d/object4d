@@ -1,0 +1,60 @@
+{
+	"info": {
+		"_postman_id": "2a0d6a48-f4f8-4ce5-bc72-cfa0a6463a67",
+		"name": "object4d",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "put object",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "file",
+					"file": {}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3002",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3002"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get object",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:3002/[2018-12-13-19-24-02,0,0,]",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3002",
+					"path": [
+						"[2018-12-13-19-24-02,0,0,]"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
