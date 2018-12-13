@@ -12,7 +12,20 @@ func GetMinioconfig(minioid int) (m *model.Miniocon, err error) {
 	return
 }
 
-func NewMinioclient(minioid int) (c *minio.Client, err error) {
+func NewMinioclient(cfg *model.Miniocon) (c *minio.Client, err error) {
+	c, err = minio.New(cfg.Endpoint, cfg.Ak, cfg.Sk, cfg.Secure)
+	if err != nil {
+		log.Warn(log.Fields{
+			"Func": "NewMinioclient",
+			"Err":  err.Error(),
+		})
+	}
+	log.Info(log.Fields{
+		"minio": cfg,
+	})
+	return
+}
+func NewMinioclientByid(minioid int) (c *minio.Client, err error) {
 	// 初使化minio client对象。
 	cfg, err := GetMinioconfig(minioid)
 	if err != nil {
@@ -22,12 +35,5 @@ func NewMinioclient(minioid int) (c *minio.Client, err error) {
 		})
 		return nil, err
 	}
-	c, err = minio.New(cfg.Endpoint, cfg.AccessKeyID, cfg.SecretAccessKey, cfg.Secure)
-	if err != nil {
-		log.Warn(log.Fields{
-			"Func": "NewMinioclient",
-			"Err":  err.Error(),
-		})
-	}
-	return
+	return NewMinioclient(cfg)
 }

@@ -15,7 +15,7 @@ func Endresp(result model.CommonResp, resp http.ResponseWriter) {
 	log.Info(log.Fields{
 		"resp": result,
 	})
-	httpserver.Header(resp, "application/octet-stream", AccessControlAllowMethods())
+	httpserver.Header(resp, "application/json", AccessControlAllowMethods())
 
 	r, _ := json.Marshal(result)
 	resp.Write(r)

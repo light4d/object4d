@@ -3,12 +3,13 @@ package service
 import (
 	"github.com/gobestsdk/gobase/log"
 	"github.com/light4d/object4d/dao"
+	"github.com/light4d/object4d/model"
 	"time"
 )
 
-func Minioconcount() (c []int) {
+func Minioconcount() (c []model.Miniocon) {
 	db := dao.DB()
-	err := db.Table("miniocon").Find(&c).Select("id").Error
+	err := db.Table("miniocon").Find(&c).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"object":       "miniocon",
@@ -16,8 +17,17 @@ func Minioconcount() (c []int) {
 			"Err":          err.Error(),
 		})
 	}
+
 	return
 }
-func RendMinioconid() int {
-	return Minioconcount()[time.Now().Second()%len(Minioconcount())]
+func RendMinioconid() model.Miniocon {
+	ms := Minioconcount()
+	log.Info(log.Fields{
+		"minio con": ms,
+	})
+	idx := time.Now().Second() % len(Minioconcount())
+	log.Info(log.Fields{
+		"index": idx,
+	})
+	return ms[idx]
 }

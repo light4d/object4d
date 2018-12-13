@@ -17,3 +17,6 @@ func (o Object4d) Bucket() string {
 func (o Object4d) Objectname() string {
 	return o.Lat + "_" + o.Lng + "_" + o.H
 }
+func (o Object4d) Url() string {
+	return "[" + o.T + "," + o.Lng + "," + o.Lat + "," + o.H + "]"
+}

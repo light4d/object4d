@@ -30,7 +30,7 @@ func SearchObject4d(filter map[string]interface{}) (result []model.Object4d, err
 	return
 
 }
-func FcreateObject4d(object model.Object4d, sourceobjectstream io.Reader) (n int64, err error) {
+func FcreateObject4d(recommendcon model.Miniocon, object model.Object4d, sourceobjectstream io.Reader) (n int64, err error) {
 	log.Info(log.Fields{
 		"func":     "CreateObject",
 		"object4d": object,
@@ -62,12 +62,22 @@ func FcreateObject4d(object model.Object4d, sourceobjectstream io.Reader) (n int
 		return 0, model.ErrLenBigThan1
 	}
 
-	mc, err := dao.NewMinioclient(object.M)
+	mc, err := dao.NewMinioclient(&recommendcon)
 	if err != nil {
+		log.Warn(log.Fields{
+			"object4d":       object,
+			"NewMinioclient": "NewMinioclient",
+			"Err":            err.Error(),
+		})
 		return
 	}
-	err = mc.MakeBucket(object.Bucket(), "earth")
+	err = mc.MakeBucket(object.Bucket(), "")
 	if err != nil {
+		log.Warn(log.Fields{
+			"object4d":   object,
+			"MakeBucket": "MakeBucket",
+			"Err":        err.Error(),
+		})
 		return
 	}
 	n, err = mc.PutObject(object.Bucket(), object.Objectname(), sourceobjectstream, -1, minio.PutObjectOptions{})
@@ -98,7 +108,7 @@ func FgetObject(object model.Object4d) (stream io.Reader, err error) {
 		return nil, model.ErrLenBigThan1
 	}
 
-	mc, err := dao.NewMinioclient(object.M)
+	mc, err := dao.NewMinioclientByid(object.M)
 	if err != nil {
 		return nil, err
 	}

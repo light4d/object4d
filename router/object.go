@@ -32,6 +32,7 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 			Code:  -1,
 		}
 		Endresp(result, resp)
+		return
 	}
 	bs, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -40,39 +41,50 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 			Code:  -1,
 		}
 		Endresp(result, resp)
+		return
 	}
+	resp.Header().Set("Content-type", "octet-stream")
 	resp.Write(bs)
 }
 func object4d_post(resp http.ResponseWriter, req *http.Request) {
+
 	lng, lat, err := lightlocation.GetLocation(req)
 
-	if err != nil {
-		result := model.CommonResp{
-			Error: err.Error(),
-			Code:  -1,
-		}
-		Endresp(result, resp)
-	}
+	//if err != nil {
+	//	result := model.CommonResp{
+	//		Error: err.Error(),
+	//		Code:  -1,
+	//	}
+	//	Endresp(result, resp)
+	//	return
+	//}
 
+	recommendcon := service.RendMinioconid()
 	object4d := model.Object4d{
 		Lng: lng,
 		Lat: lat,
-		T:   time.Now().Format("2006-01-02 15:04:05"),
-		M:   service.RendMinioconid(),
+		T:   time.Now().Format("2006-01-02-15-04-05"),
+		M:   recommendcon.ID,
 	}
-	n, err := service.FcreateObject4d(object4d, req.Body)
+	n, err := service.FcreateObject4d(recommendcon, object4d, req.Body)
 	if err != nil {
 		result := model.CommonResp{
 			Error: err.Error(),
 			Code:  -1,
 		}
 		Endresp(result, resp)
+		return
 	} else {
 		result := model.CommonResp{
-			Result: n,
-			Code:   0,
+			Result: map[string]interface{}{
+				"object4d": object4d,
+				"url":      object4d.Url(),
+				"size":     n,
+			},
+			Code: 0,
 		}
 		Endresp(result, resp)
+		return
 	}
 
 }
