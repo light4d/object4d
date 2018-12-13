@@ -7,6 +7,7 @@ import (
 	"github.com/light4d/object4d/service"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func object4d(resp http.ResponseWriter, req *http.Request) {
@@ -43,5 +44,34 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 	resp.Write(bs)
 }
 func object4d_post(resp http.ResponseWriter, req *http.Request) {
-	lightlocation.GetLocation(req)
+	lng, lat, err := lightlocation.GetLocation(req)
+
+	if err != nil {
+		result := model.CommonResp{
+			Error: err.Error(),
+			Code:  -1,
+		}
+		Endresp(result, resp)
+	}
+
+	object4d := model.Object4d{
+		Lng: lng,
+		Lat: lat,
+		T:   time.Now().Format("2006-01-02 15:04:05"),
+	}
+	n, err := service.FcreateObject4d(object4d, req.Body)
+	if err != nil {
+		result := model.CommonResp{
+			Error: err.Error(),
+			Code:  -1,
+		}
+		Endresp(result, resp)
+	} else {
+		result := model.CommonResp{
+			Result: n,
+			Code:   0,
+		}
+		Endresp(result, resp)
+	}
+
 }
