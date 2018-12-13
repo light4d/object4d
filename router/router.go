@@ -5,5 +5,5 @@ import (
 )
 
 func Init() {
-	server.O.ServerMux.HandleFunc("/", object4d)
+	server.O.ServerMux.HandleFunc("/", Object4d)
 }

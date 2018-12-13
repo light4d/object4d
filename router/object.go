@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func object4d(resp http.ResponseWriter, req *http.Request) {
+func Object4d(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Content-Type", "application/json")
 	switch req.Method {
 	case http.MethodGet:
