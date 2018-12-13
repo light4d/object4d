@@ -2,13 +2,13 @@ package dao
 
 import (
 	"github.com/gobestsdk/gobase/log"
+	"github.com/light4d/object4d/common/server"
 	"github.com/light4d/object4d/model"
-
 	"github.com/minio/minio-go"
 )
 
 func GetMinioconfig(minioid int) (m *model.Miniocon, err error) {
-	err = DB().Table("miniocon").Find(minioid, m).Error
+	err = DB(server.APPConfig.Mysql).Table("miniocon").Find(minioid, m).Error
 	return
 }
 

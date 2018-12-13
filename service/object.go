@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/gobestsdk/gobase/log"
 
+	"github.com/light4d/object4d/common/server"
 	"github.com/light4d/object4d/dao"
 	"github.com/light4d/object4d/model"
 	"github.com/minio/minio-go"
@@ -14,7 +15,7 @@ func SearchObject4d(filter map[string]interface{}) (result []model.Object4d, err
 		"func":   "SearchObject4ds",
 		"filter": filter,
 	})
-	db := dao.DB()
+	db := dao.DB(server.APPConfig.Mysql)
 	err = db.Table("object4d").Find(&result, filter).Error
 	if err != nil {
 		log.Warn(log.Fields{
@@ -36,7 +37,7 @@ func FcreateObject4d(recommendcon model.Miniocon, object model.Object4d, sourceo
 		"object4d": object,
 	})
 
-	db := dao.DB()
+	db := dao.DB(server.APPConfig.Mysql)
 	err = db.Table("object4d").Create(&object).Error
 	if err != nil {
 		log.Warn(log.Fields{

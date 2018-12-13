@@ -3,14 +3,14 @@ package dao
 import (
 	"github.com/go-redis/redis"
 	"github.com/gobestsdk/gobase/log"
-	"github.com/light4d/object4d/common/config"
+	"github.com/light4d/object4d/common/server"
 )
 
 func Redis() *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     config.APPConfig.Redis.Addr,
-		Password: config.APPConfig.Redis.Password,
-		DB:       config.APPConfig.Redis.DB,
+		Addr:     server.APPConfig.Redis.Addr,
+		Password: server.APPConfig.Redis.Password,
+		DB:       server.APPConfig.Redis.DB,
 	})
 
 	pong, err := client.Ping().Result()
@@ -19,7 +19,7 @@ func Redis() *redis.Client {
 		log.Fatal(log.Fields{
 			"redis":  pong,
 			"err":    err,
-			"detail": config.APPConfig.Redis,
+			"detail": server.APPConfig.Redis,
 		})
 
 	}

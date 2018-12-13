@@ -8,7 +8,7 @@ import (
 	"github.com/light4d/object4d/common/server"
 
 	"github.com/gobestsdk/gobase/log"
-	"github.com/light4d/object4d/common/config"
+
 	"github.com/light4d/object4d/router"
 )
 
@@ -37,7 +37,7 @@ func main() {
 		exit(0)
 	}()
 	if len(os.Args) > 1 {
-		config.ParseConfig(os.Args[1])
+		server.ParseConfig(os.Args[1])
 	}
 
 	router.Init()
