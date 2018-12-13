@@ -32,12 +32,12 @@ func SearchObject4d(filter map[string]interface{}) (result []model.Object4d, err
 }
 func FcreateObject4d(object model.Object4d, sourceobjectstream io.Reader) (n int64, err error) {
 	log.Info(log.Fields{
-		"func":   "CreateObject",
-		"object": object,
+		"func":     "CreateObject",
+		"object4d": object,
 	})
 
 	db := dao.DB()
-	err = db.Table("object").Create(&object).Error
+	err = db.Table("object4d").Create(&object).Error
 	if err != nil {
 		log.Warn(log.Fields{
 			"object":       object,
@@ -49,8 +49,8 @@ func FcreateObject4d(object model.Object4d, sourceobjectstream io.Reader) (n int
 
 	objects, err := SearchObject4d(map[string]interface{}{
 		"t":   object.T,
-		"lng": object.T,
-		"lat": object.T,
+		"lng": object.Lng,
+		"lat": object.Lat,
 	})
 	if err != nil {
 		return

@@ -58,6 +58,7 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 		Lng: lng,
 		Lat: lat,
 		T:   time.Now().Format("2006-01-02 15:04:05"),
+		M:   service.RendMinioconid(),
 	}
 	n, err := service.FcreateObject4d(object4d, req.Body)
 	if err != nil {
