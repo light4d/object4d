@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gobestsdk/gobase/httpserver"
+	"github.com/gobestsdk/gobase/log"
 	"github.com/light4d/lightlocation"
 	"github.com/light4d/object4d/model"
 	"github.com/light4d/object4d/service"
@@ -50,14 +51,17 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 
 	lng, lat, err := lightlocation.GetLocation(req)
 
-	//if err != nil {
-	//	result := model.CommonResp{
-	//		Error: err.Error(),
-	//		Code:  -1,
-	//	}
-	//	Endresp(result, resp)
-	//	return
-	//}
+	if err != nil {
+		result := model.CommonResp{
+			Error: err.Error(),
+			Code:  -1,
+		}
+		log.Warn(log.Fields{
+			"error": err.Error(),
+		})
+		Endresp(result, resp)
+		return
+	}
 
 	recommendcon := service.RendMinioconid()
 	object4d := model.Object4d{
