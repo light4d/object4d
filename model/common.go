@@ -6,6 +6,7 @@ type CommonResp struct {
 	Error  interface{}
 	Code   int
 	Result interface{}
+	Total  *int64
 }
 
 type Err struct {
