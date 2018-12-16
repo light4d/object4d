@@ -24,8 +24,14 @@ func Object4d(resp http.ResponseWriter, req *http.Request) {
 }
 
 func object4d_get(resp http.ResponseWriter, req *http.Request) {
-	object4d := model.ParseObject4d(req.URL.RawQuery)
-	r, err := service.FgetObject(object4d)
+	log.Info(log.Fields{
+		"req": req.RequestURI,
+	})
+	object4d := model.ParseObject4d(req.RequestURI)
+	log.Info(log.Fields{
+		"object4d": object4d,
+	})
+	r, err := service.FgetObject(*object4d)
 
 	if err != nil {
 		result := model.CommonResp{
@@ -48,6 +54,7 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 	resp.Write(bs)
 }
 func object4d_post(resp http.ResponseWriter, req *http.Request) {
+	object4d := model.ParseObject4d(req.RequestURI)
 
 	lng, lat, err := lightlocation.GetLocation(req)
 
@@ -64,13 +71,13 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	recommendcon := service.RendMinioconid()
-	object4d := model.Object4d{
+	object4d = &model.Object4d{
 		Lng: lng,
 		Lat: lat,
 		T:   time.Now().Format("2006-01-02-15-04-05"),
 		M:   recommendcon.ID,
 	}
-	n, err := service.FcreateObject4d(recommendcon, object4d, req.Body)
+	n, err := service.FcreateObject4d(recommendcon, *object4d, req.Body)
 	if err != nil {
 		result := model.CommonResp{
 			Error: err.Error(),

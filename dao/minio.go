@@ -8,7 +8,8 @@ import (
 )
 
 func GetMinioconfig(minioid int) (m *model.Miniocon, err error) {
-	err = DB(server.APPConfig.Mysql).Table("miniocon").Find(minioid, m).Error
+	m = new(model.Miniocon)
+	err = DB(server.APPConfig.Mysql).Table("miniocon").Where("id = ?", minioid).Find(m).Error
 	return
 }
 
@@ -30,8 +31,9 @@ func NewMinioclientByid(minioid int) (c *minio.Client, err error) {
 	cfg, err := GetMinioconfig(minioid)
 	if err != nil {
 		log.Warn(log.Fields{
-			"Func": "NewMinioclient",
-			"Err":  err.Error(),
+			"Func":   "GetMinioconfig",
+			"Err":    err.Error(),
+			"Detail": cfg,
 		})
 		return nil, err
 	}

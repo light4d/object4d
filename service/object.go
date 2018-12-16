@@ -96,8 +96,8 @@ func FcreateObject4d(recommendcon model.Miniocon, object model.Object4d, sourceo
 func FgetObject(object model.Object4d) (stream io.Reader, err error) {
 	objects, err := SearchObject4d(map[string]interface{}{
 		"t":   object.T,
-		"lng": object.T,
-		"lat": object.T,
+		"lng": object.Lng,
+		"lat": object.Lat,
 	})
 	if err != nil {
 		return
