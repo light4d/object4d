@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"github.com/light4d/object4d/model"
+	"time"
 )
 
 // 百度lbs相关
@@ -30,7 +32,17 @@ const (
 则根据经纬度逆地理编码结构化为详细地址,如果没有上面两个字段,
 则通过获取调用方ip获取详细地址
 */
-func GetLocation(req *http.Request) (string, string, error) {
+func GetLocation(req *http.Request) (*model.Object4d, error) {
+
+	// 从URL取参数
+	object4d := model.ParseObject4d(req.RequestURI)
+
+	if object4d != nil {
+		return object4d, nil
+	}
+
+	// 从header取参数
+
 	// 获取经度
 	longitude := req.Header.Get("longitude")
 
@@ -45,28 +57,43 @@ func GetLocation(req *http.Request) (string, string, error) {
 		ip = ""
 	}
 
+	o := new(model.Object4d)
+	time := time.Now().Format("2006-01-02-15-04-05")
+
 	// 如代理ip数组不为空, 则取第一个ip作为调用客户端ip
 	if longitude == "" || latitude == "" {
 		resp, err := http.Get(createBaiduReqURL(ip))
 		if err != nil {
-			return "0", "0", err
+			o.Lat = "0"
+			o.Lng = "0"
+			o.T = time
+			return o, err
 		}
 
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return "0", "0", err
+			o.Lat = "0"
+			o.Lng = "0"
+			o.T = time
+			return o, err
 		}
 
 		m := make(map[string]interface{})
 		err = json.Unmarshal(body, &m)
 		if err != nil {
-			return "0", "0", err
+			o.Lat = "0"
+			o.Lng = "0"
+			o.T = time
+			return o, err
 		}
 
 		if v, ok := m["status"].(int); !ok {
 			if v != 0 {
-				return "0", "0", errors.New("百度返回错误")
+				o.Lat = "0"
+				o.Lng = "0"
+				o.T = time
+				return o, errors.New("百度返回错误")
 			}
 		}
 
@@ -83,15 +110,24 @@ func GetLocation(req *http.Request) (string, string, error) {
 					fmt.Println("latitude:" + latitude)
 				}
 			} else {
-				return "0", "0", errors.New("point字段未取到")
+				o.Lat = "0"
+				o.Lng = "0"
+				o.T = time
+				return o, errors.New("point字段未取到")
 			}
 		} else {
-			return "0", "0", errors.New("content字段未取到")
+			o.Lat = "0"
+			o.Lng = "0"
+			o.T = time
+			return o, errors.New("content字段未取到")
 		}
 	}
 
 	// 返回纬经度
-	return latitude, longitude, nil
+	o.Lat = latitude
+	o.Lng = longitude
+	o.T = time
+	return o, nil
 }
 
 /**

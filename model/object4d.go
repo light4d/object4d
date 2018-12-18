@@ -36,7 +36,7 @@ func ParseObject4d(rawpath string) *Object4d {
 			o.H = t_3d[3]
 		}
 	} else {
-
+       return nil
 	}
 
 	return o

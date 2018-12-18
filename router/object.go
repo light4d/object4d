@@ -7,7 +7,6 @@ import (
 	"github.com/light4d/object4d/service"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 func Object4d(resp http.ResponseWriter, req *http.Request) {
@@ -53,10 +52,7 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 	resp.Write(bs)
 }
 func object4d_post(resp http.ResponseWriter, req *http.Request) {
-	object4d := model.ParseObject4d(req.RequestURI)
-
-	lng, lat, err := service.GetLocation(req)
-
+	obj4d, err := service.GetLocation(req)
 	if err != nil {
 		result := model.CommonResp{
 			Error: err.Error(),
@@ -70,10 +66,10 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	recommendcon := service.RendMinioconid()
-	object4d = &model.Object4d{
-		Lng: lng,
-		Lat: lat,
-		T:   time.Now().Format("2006-01-02-15-04-05"),
+	object4d := &model.Object4d{
+		Lng: obj4d.Lng,
+		Lat: obj4d.Lat,
+		T:   obj4d.T,
 		M:   recommendcon.ID,
 	}
 	n, err := service.FcreateObject4d(recommendcon, *object4d, req.Body)
