@@ -4,7 +4,7 @@
 + 安装minio
 + docker 运行object4d
 ```
-docker run -v mylocalconfig.json:/GOPATH/bin/config.json light4d/object4d
+docker run -v mylocalconfig.json:/GOPATH/bin/config.json -p 9001:9001 light4d/object4d
 ```
 
 ## 底层架构
