@@ -9,7 +9,8 @@ import (
 
 var (
 	APPConfig config.Config = config.Config{
-		Mysql: "",
+		Mysql:        "root:@tcp(localhost:3306)/object4d?charset=utf8mb4&parseTime=true",
+		Object4dPort: 9001,
 	}
 )
 
