@@ -3,6 +3,8 @@ FROM golang
 MAINTAINER light4d
 WORKDIR /GOPATH/src/github.com/light4d/object4d
 ADD . /GOPATH/src/github.com/light4d/object4d
-RUN cd /GOPATH/src/github.com/light4d/object4d && go build .
+ENV GOPATH=/GOPATH
+RUN cd /GOPATH/src/github.com/light4d/object4d && go get
 EXPOSE 9001
-CMD  ["./object4d" ]
+VOLUMN /GOPATH/src/github.com/light4d/object4d/bin/
+CMD  ["/GOPATH/bin/object4d" "/GOPATH/src/github.com/light4d/object4d/bin/config.json"]
