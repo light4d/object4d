@@ -23,7 +23,8 @@ func Object4d(resp http.ResponseWriter, req *http.Request) {
 
 func object4d_get(resp http.ResponseWriter, req *http.Request) {
 	log.Info(log.Fields{
-		"req": req.RequestURI,
+		"uri":    req.RequestURI,
+		"method": req.Method,
 	})
 	object4d := model.ParseObject4d(req.RequestURI)
 	log.Info(log.Fields{
