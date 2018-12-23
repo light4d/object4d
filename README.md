@@ -1,5 +1,12 @@
 # object4d 时空对象存储管理服务
 
+## 快速部署
++ 安装minio
++ docker 运行object4d
+```
+docker run -v mylocalconfig.json:/GOPATH/bin/config.json light4d/object4d
+```
+
 ## 底层架构
 
 ![](doc/design.png)
