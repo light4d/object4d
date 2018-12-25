@@ -73,7 +73,8 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 		T:   obj4d.T,
 		M:   recommendcon.ID,
 	}
-	n, err := service.FcreateObject4d(recommendcon, *object4d, req.Body)
+	contentType := req.Header.Get("fileContentType")
+	n, err := service.FcreateObject4d(recommendcon, *object4d, req.Body, contentType)
 	if err != nil {
 		result := model.CommonResp{
 			Error: err.Error(),
