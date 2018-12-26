@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gobestsdk/gobase/httpserver"
 	"github.com/gobestsdk/gobase/log"
+	"github.com/light4d/object4d/common"
 	"github.com/light4d/object4d/model"
 	"github.com/light4d/object4d/service"
 	"io/ioutil"
@@ -30,8 +31,7 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 	log.Info(log.Fields{
 		"object4d": object4d,
 	})
-	r, err := service.FgetObject(*object4d)
-
+	o, err := service.FgetObject(*object4d)
 	if err != nil {
 		result := model.CommonResp{
 			Error: err.Error(),
@@ -40,7 +40,7 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 		Endresp(result, resp)
 		return
 	}
-	bs, err := ioutil.ReadAll(r)
+	ost, err := o.Stat()
 	if err != nil {
 		result := model.CommonResp{
 			Error: err.Error(),
@@ -49,7 +49,16 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 		Endresp(result, resp)
 		return
 	}
-	resp.Header().Set("Content-type", "octet-stream")
+	bs, err := ioutil.ReadAll(o)
+	if err != nil {
+		result := model.CommonResp{
+			Error: err.Error(),
+			Code:  -1,
+		}
+		Endresp(result, resp)
+		return
+	}
+	resp.Header().Set("Content-type", ost.ContentType)
 	resp.Write(bs)
 }
 func object4d_post(resp http.ResponseWriter, req *http.Request) {
@@ -73,7 +82,7 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 		T:   obj4d.T,
 		M:   recommendcon.ID,
 	}
-	contentType := req.Header.Get("fileContentType")
+	contentType := req.Header.Get(common.Ctype)
 	n, err := service.FcreateObject4d(recommendcon, *object4d, req.Body, contentType)
 	if err != nil {
 		result := model.CommonResp{

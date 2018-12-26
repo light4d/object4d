@@ -5,19 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/light4d/object4d/model"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
 	"strings"
-	"github.com/light4d/object4d/model"
 	"time"
 )
 
 // 百度lbs相关
 const (
-	BaiduAk    = "EcaqNxUoy0LHtsVKXIshPOqHZZAHN7sj"          // BaiduAk
-	BaiduSk    = "jh9cjRcM8CpBkuB4Sm5mnBMgAboqcUz3"          // BaiduSk
+	BaiduAk    = "EcaqNxUoy0LHtsVKXIshPOqHZZAHN7sj"       // BaiduAk
+	BaiduSk    = "jh9cjRcM8CpBkuB4Sm5mnBMgAboqcUz3"       // BaiduSk
 	BaiduIPUrl = "https://api.map.baidu.com/location/ip?" // 百度ip获取位置信息url
 )
 
@@ -171,7 +171,7 @@ func createBaiduLbsSn(paramsStr string) (sn string) {
 	// 百度lbs sn
 	sn = fmt.Sprintf("%x", md5.Sum([]byte(url.QueryEscape(wholeStr))))
 	fmt.Print("wholeStr:", wholeStr)
-    //fmt.Print("sn:", sn)
+	//fmt.Print("sn:", sn)
 	return
 }
 
@@ -199,8 +199,8 @@ func remoteIP(req *http.Request) string {
 }
 
 /**
-   是否为公网IP
- */
+  是否为公网IP
+*/
 func isPublicIP(IP net.IP) bool {
 	if IP.IsLoopback() || IP.IsLinkLocalMulticast() || IP.IsLinkLocalUnicast() {
 		return false

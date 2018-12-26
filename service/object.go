@@ -95,7 +95,7 @@ func FcreateObject4d(recommendcon model.Miniocon, object model.Object4d, sourceo
 	return
 }
 
-func FgetObject(object model.Object4d) (stream io.Reader, err error) {
+func FgetObject(object model.Object4d) (stream *minio.Object, err error) {
 	objects, err := SearchObject4d(map[string]interface{}{
 		"t":   object.T,
 		"lng": object.Lng,
@@ -105,24 +105,25 @@ func FgetObject(object model.Object4d) (stream io.Reader, err error) {
 		return
 	}
 	if len(objects) == 0 {
-		return nil, model.ErrLenNotEqual1
+		err = model.ErrLenNotEqual1
+		return
 	}
 	if len(objects) > 1 {
-		return nil, model.ErrLenBigThan1
+		err = model.ErrLenBigThan1
 	}
 
 	mc, err := dao.NewMinioclientByid(object.M)
 	if err != nil {
-		return nil, err
+		return
 	}
 	e, err := mc.BucketExists(object.Bucket())
 	if err != nil || !e {
-		return nil, err
+		return
 	}
 
 	o, err := mc.GetObject(object.Bucket(), object.Objectname(), minio.GetObjectOptions{})
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return o, nil
