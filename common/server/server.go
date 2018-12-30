@@ -4,8 +4,10 @@ import (
 	"github.com/gobestsdk/gobase/httpserver"
 )
 
+const Appname = "ojbect4d"
+
 var (
-	O = httpserver.New("ojbect4d")
+	O = httpserver.New(Appname)
 )
 
 func Run() {

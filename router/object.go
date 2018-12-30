@@ -4,6 +4,7 @@ import (
 	"github.com/gobestsdk/gobase/httpserver"
 	"github.com/gobestsdk/gobase/log"
 	"github.com/light4d/object4d/common"
+	"github.com/light4d/object4d/common/server"
 	"github.com/light4d/object4d/model"
 	"github.com/light4d/object4d/service"
 	"io/ioutil"
@@ -18,7 +19,7 @@ func Object4d(resp http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		object4d_post(resp, req)
 	default:
-		httpserver.Options(req, resp, "application/octet-stream", AccessControlAllowMethods())
+		httpserver.Options(req, resp, "application/octet-stream", server.Appname, AccessControlAllowMethods())
 	}
 }
 
