@@ -54,6 +54,7 @@ func FcreateObject4d(recommendcon model.Miniocon, object model.Object4d, sourceo
 		"lat": object.Lat,
 	})
 	if err != nil {
+
 		return
 	}
 	if len(objects) == 0 {
@@ -106,23 +107,44 @@ func FgetObject(object model.Object4d) (stream *minio.Object, err error) {
 	}
 	if len(objects) == 0 {
 		err = model.ErrLenNotEqual1
+		log.Warn(log.Fields{
+			"object": object,
+			"func":   "FgetObject",
+			"Err":    err.Error(),
+		})
 		return
 	}
 	if len(objects) > 1 {
+		log.Warn(log.Fields{
+			"object": object,
+			"func":   "FgetObject",
+			"Err":    err.Error(),
+		})
 		err = model.ErrLenBigThan1
 	}
 
 	mc, err := dao.NewMinioclientByid(object.M)
 	if err != nil {
+		log.Warn(log.Fields{
+			"object": object,
+			"func":   "NewMinioclientByid",
+			"Err":    err.Error(),
+		})
 		return
 	}
 	e, err := mc.BucketExists(object.Bucket())
 	if err != nil || !e {
+
 		return
 	}
 
 	o, err := mc.GetObject(object.Bucket(), object.Objectname(), minio.GetObjectOptions{})
 	if err != nil {
+		log.Warn(log.Fields{
+			"object": object,
+			"func":   "GetObject",
+			"Err":    err.Error(),
+		})
 		return
 	}
 

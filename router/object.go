@@ -38,6 +38,10 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 			Error: err.Error(),
 			Code:  -1,
 		}
+		log.Warn(log.Fields{
+			"func": "FgetObject",
+			"Err":  err.Error(),
+		})
 		Endresp(result, resp)
 		return
 	}
@@ -47,6 +51,10 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 			Error: err.Error(),
 			Code:  -1,
 		}
+		log.Warn(log.Fields{
+			"func": "Stat",
+			"Err":  err.Error(),
+		})
 		Endresp(result, resp)
 		return
 	}
@@ -56,6 +64,10 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 			Error: err.Error(),
 			Code:  -1,
 		}
+		log.Warn(log.Fields{
+			"func": "ReadAll",
+			"Err":  err.Error(),
+		})
 		Endresp(result, resp)
 		return
 	}
@@ -90,6 +102,10 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 			Error: err.Error(),
 			Code:  -1,
 		}
+		log.Warn(log.Fields{
+			"func": "FcreateObject4d",
+			"Err":  err.Error(),
+		})
 		Endresp(result, resp)
 		return
 	} else {
@@ -101,6 +117,7 @@ func object4d_post(resp http.ResponseWriter, req *http.Request) {
 			},
 			Code: 0,
 		}
+
 		Endresp(result, resp)
 		return
 	}
