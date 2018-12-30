@@ -103,6 +103,11 @@ func FgetObject(object model.Object4d) (stream *minio.Object, err error) {
 		"lat": object.Lat,
 	})
 	if err != nil {
+		log.Warn(log.Fields{
+			"object": object,
+			"func":   "SearchObject4d",
+			"Err":    err.Error(),
+		})
 		return
 	}
 	if len(objects) == 0 {
