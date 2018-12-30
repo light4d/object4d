@@ -21,9 +21,6 @@ func NewMinioclient(cfg *model.Miniocon) (c *minio.Client, err error) {
 			"Err":  err.Error(),
 		})
 	}
-	log.Info(log.Fields{
-		"minio": cfg,
-	})
 	return
 }
 func NewMinioclientByid(minioid int) (c *minio.Client, err error) {
