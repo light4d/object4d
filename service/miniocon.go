@@ -10,6 +10,7 @@ import (
 
 func Minioconcount() (c []model.Miniocon) {
 	db := dao.DB(server.APPConfig.Mysql)
+	defer db.Close()
 	err := db.Table("miniocon").Find(&c).Error
 	if err != nil {
 		log.Warn(log.Fields{

@@ -12,5 +12,6 @@ func DB(Mysql string) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 	return db
 }

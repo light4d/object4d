@@ -16,6 +16,7 @@ func SearchObject4d(filter map[string]interface{}) (result []model.Object4d, err
 		"filter": filter,
 	})
 	db := dao.DB(server.APPConfig.Mysql)
+	defer db.Close()
 	err = db.Table("object4d").Find(&result, filter).Error
 	if err != nil {
 		log.Warn(log.Fields{
@@ -38,6 +39,7 @@ func FcreateObject4d(recommendcon model.Miniocon, object model.Object4d, sourceo
 	})
 
 	db := dao.DB(server.APPConfig.Mysql)
+	defer db.Close()
 	err = db.Table("object4d").Create(&object).Error
 	if err != nil {
 		log.Warn(log.Fields{
