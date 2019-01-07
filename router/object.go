@@ -72,6 +72,7 @@ func object4d_get(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	resp.Header().Set("Content-type", ost.ContentType)
+	resp.Header().Set("Server", server.Appname)
 	resp.Write(bs)
 }
 func object4d_post(resp http.ResponseWriter, req *http.Request) {
